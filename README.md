@@ -1,41 +1,9 @@
-import requests
-from bs4 import BeautifulSoup
-import lxml
-import csv
-if response.status_code==200:
-    print("conneted to the website")
-    html_content=response.text
-else:
-    print(f"Connection failed! Status code: {response.status_code}")
-    Soup=BeautifulSoup(html_content,'lxml')
-    hotel_divs=Soup.find_all('div',role="listitem")
-    with open('hotel_data.csv', 'w', encoding='utf-8', newline='') as file_csv:
-    writer = csv.writer(file_csv)
-    
-    # Correct header row
-    writer.writerow(['hotel_name', 'locality', 'price', 'rating', 'score', 'review', 'link'])
+This Python script is a web scraping tool designed to extract hotel information from a webpage and save it into a structured CSV file. It leverages the requests library to fetch webpage content, BeautifulSoup for parsing HTML, and lxml as the parser to enhance efficiency. The script systematically navigates through the webpage to collect essential details about each hotel, such as its name, location, price, rating, review score, customer feedback, and a direct booking link.
 
-    for hotel in hotel_divs:
-        hotel_name = hotel.find('div', class_="f6431b446c a15b38c233")
-        hotel_name = hotel_name.text.strip() if hotel_name else "NA"
+The scraping process begins by identifying all hotel listings on the page using div elements that have the attribute role="listitem". Within each hotel entry, it searches for relevant details based on their respective HTML classes. The script ensures that missing or unavailable values are handled properly by replacing them with "NA", preventing errors or inconsistencies in the extracted data.
 
-        location = hotel.find('span', class_="aee5343fdb def9bc142a")
-        location = location.text.strip() if location else "NA"
+A key aspect of data cleaning within this script is the removal of unnecessary characters. For instance, the script strips any leading or trailing spaces from extracted text and removes the ₹ currency symbol from price values to keep the data clean and usable. Additionally, the script extracts numerical values from review scores by splitting the text and selecting only the last part, ensuring structured and accurate data representation.
 
-        price = hotel.find('span', class_="f6431b446c fbfd7c1165 e84eb96b1f")
-        price = price.text.strip().replace('₹', '') if price else "NA"
+Once the data extraction process is complete, the script writes the collected information into a CSV file named hotel_data.csv. It creates a properly formatted header row to define each column and iterates through the list of hotels, appending their details as new rows in the file. The CSV format ensures compatibility with data analysis tools like Excel, Pandas, or Power BI, enabling further analysis of hotel prices, ratings, and customer reviews.
 
-        rating = hotel.find('div', class_="a3b8729ab1 e6208ee469 cb2cbb3ccb")
-        rating = rating.text.strip() if rating else "NA"
-
-        score = hotel.find('div', class_="a3b8729ab1 d86cee9b25")
-        score = score.text.strip().split(' ')[-1] if score else "NA"
-
-        review = hotel.find('div', class_="abf093bdfe f45d8e4c32 d935416c47")
-        review = review.text.strip() if review else "NA"
-
-        link = hotel.find('a', href=True)
-        link = link['href'] if link else "NA"
-
-        writer.writerow([hotel_name, location, price, rating, score, review, link])
-    
+This web scraping script is particularly useful for businesses, analysts, or travel enthusiasts looking to compare hotel pricing, track market trends, or gather insights into customer preferences. It can be modified to extract additional data fields or adapted to different websites by adjusting the target HTML elements. Furthermore, integrating it with automation tools can enable periodic data collection for real-time market monitoring.
